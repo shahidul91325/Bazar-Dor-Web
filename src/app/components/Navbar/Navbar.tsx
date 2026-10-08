@@ -8,7 +8,7 @@ import NavMarquee from './NavMarquee';
 const Navbar = () => {
   return (
     <div>
-      <div className=" flex justify-between items-center mb-3 w-6xl mx-auto">
+      <div className=" lg:flex lg:justify-between lg:items-center md:flex md:justify-between md:items-center flex justify-center items-center mb-3 lg:w-6xl mx-auto md:w-3xl lg:mx-auto md:mx-auto w-full gap-5">
         <Link href={'/'}>
           <div className="flex items-center gap-3 mt-5 ">
             <div className="bg-green-700 rounded-md">
@@ -16,17 +16,17 @@ const Navbar = () => {
             </div>
 
             <div>
-              <h1 className="font-bold text-xl">বাজার দর</h1>
+              <h1 className="font-bold lg:text-xl md:text-lg text-sm">বাজার দর</h1>
               <NavDate></NavDate>
             </div>
           </div>
         </Link>
-        <div className="flex justify-center items-center gap-5 ">
+        <div className="flex justify-center items-center lg:gap-5 gap-1 ">
           <Link href={'/sign-in'}>
-            <button className="btn btn-ghost">সাইন ইন</button>
+            <button className="btn btn-ghost lg:text-xl md:text-lg text-sm">সাইন ইন</button>
           </Link>
           <Link href={'/sign-up'}>
-            <button className="btn btn-active btn-success">সাইন আপ</button>
+            <button className="btn btn-active btn-success lg:text-xl md:text-lg text-sm">সাইন আপ</button>
           </Link>
         </div>
       </div>

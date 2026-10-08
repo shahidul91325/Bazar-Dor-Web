@@ -23,14 +23,20 @@ const NavMarquee = async () => {
           <div key={data.id} className="mr-5 mt-2">
             <Link href={`/category/${data.slug}`}>
               <div className="flex items-center justify-center gap-2 whitespace-nowrap">
-                <p>{data.image}</p>
-                <p>{data.nameBn}</p>
-                <p>
+                <p className="md:text-lg text-[8px]">{data.image}</p>
+                <p className="md:text-lg text-[8px]">{data.nameBn}</p>
+                <p className="md:text-lg text-[8px]">
                   {data.today} টাকা/{data.unit}
                 </p>
-                {direction === 'up' && <p className="font-semibold text-red-500">▲ {data.change.pct}%</p>}
-                {direction === 'down' && <p className="font-semibold text-green-600">▼ {data.change.pct}%</p>}
-                {direction === 'flat' && <p className="font-semibold text-gray-500">● {data.change.pct}%</p>}
+                {direction === 'up' && (
+                  <p className="font-semibold text-red-500 md:text-lg text-[8px]">▲ {data.change.pct}%</p>
+                )}
+                {direction === 'down' && (
+                  <p className="font-semibold text-green-600 md:text-lg text-[8px]">▼ {data.change.pct}%</p>
+                )}
+                {direction === 'flat' && (
+                  <p className="font-semibold text-gray-500 md:text-lg text-[8px]">● {data.change.pct}%</p>
+                )}
               </div>
             </Link>
           </div>

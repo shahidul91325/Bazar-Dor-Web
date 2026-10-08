@@ -18,13 +18,13 @@ const Navcategories = async () => {
 
   return (
     <div>
-      <div className="flex w-6xl mx-auto mt-5 justify-baseline items-center gap-5 font-semibold mb-5 ">
+      <div className="lg:flex lg:justify-between lg:items-center md:flex md:justify-between md:items-center flex justify-center items-center lg:w-6xl mx-auto md:w-3xl lg:mx-auto md:mx-auto w-full gap-2 font-semibold my-3 ">
         {datas.map((data: ICategoryData) => (
           <div key={data.id}>
             <Link href={`/category/${data.slug}`}>
-              <div className="flex justify-baseline items-center gap-2">
-                <p>{data.icon}</p>
-                <p>{data.nameBn}</p>
+              <div className="flex justify-baseline items-center lg:gap-2">
+                <p className="md:text-lg text-[8px]">{data.icon}</p>
+                <p className="md:text-lg text-[8px]">{data.nameBn}</p>
               </div>
             </Link>
           </div>

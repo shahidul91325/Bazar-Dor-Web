@@ -18,7 +18,7 @@ const NavDate = () => {
   }, []);
   return (
     <div>
-      <p>{date}</p>
+      <p className="md:text-lg text-[8px]">{date}</p>
     </div>
   );
 };
