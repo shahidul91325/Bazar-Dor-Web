@@ -2,9 +2,11 @@ import Link from 'next/link';
 import { ICategoryData } from '../../Types/Category';
 
 const getCategories = async () => {
-  'use cache';
-
-  const res = await fetch('https://api.api-store.workers.dev/api/bazardor/categories');
+  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/categories', {
+    next: {
+      revalidate: 10,
+    },
+  });
 
   if (!res.ok) {
     throw new Error('Failed to fetch categories');

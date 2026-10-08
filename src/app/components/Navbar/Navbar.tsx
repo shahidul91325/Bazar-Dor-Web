@@ -23,10 +23,10 @@ const Navbar = () => {
         </Link>
         <div className="flex justify-center items-center lg:gap-5 gap-1 ">
           <Link href={'/sign-in'}>
-            <button className="btn lg:btn-md btn-sm btn-ghost lg:text-md md:text-md text-[8px]">সাইন ইন</button>
+            <button className="btn lg:btn-md btn-sm btn-ghost lg:text-lg md:text-md text-[8px]">সাইন ইন</button>
           </Link>
           <Link href={'/sign-up'}>
-            <button className="btn lg:btn-md btn-sm btn-active btn-success lg:text-md md:text-md text-[8px]">
+            <button className="btn lg:btn-md btn-sm btn-active btn-success lg:text-lg md:text-md text-[8px]">
               সাইন আপ
             </button>
           </Link>

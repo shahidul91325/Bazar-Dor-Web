@@ -4,8 +4,10 @@ import { IProduct } from '../../Types/ProductData';
 import Link from 'next/link';
 
 const NavMarquee = async () => {
-  const res = await fetch('https://api.api-store.workers.dev/api/bazardor/products', {
-    cache: 'force-cache',
+  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/products', {
+    next: {
+      revalidate: 10,
+    },
   });
 
   if (!res.ok) {

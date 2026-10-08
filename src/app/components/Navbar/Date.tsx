@@ -10,7 +10,6 @@ const CurrentDate = () => {
       const currentDate = new Date().toLocaleDateString('bn-BD', {
         dateStyle: 'full',
       });
-
       setDate(currentDate);
     }, 0);
 
