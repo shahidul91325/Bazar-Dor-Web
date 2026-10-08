@@ -2,7 +2,7 @@ import HeroBanner from './HeroBanner';
 
 const Hero = () => {
   return (
-    <div className="bg-[#F9FDFA] h-full w-full">
+    <div className="bg-[#f8fbf8] w-full">
       <HeroBanner></HeroBanner>
     </div>
   );

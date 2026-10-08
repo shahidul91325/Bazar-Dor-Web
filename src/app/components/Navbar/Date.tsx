@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const NavDate = () => {
+const CurrentDate = () => {
   const [date, setDate] = useState('');
 
   useEffect(() => {
@@ -18,9 +18,9 @@ const NavDate = () => {
   }, []);
   return (
     <div>
-      <p className="md:text-lg text-[8px]">{date}</p>
+      <p className="lg:text-lg md:text-md text-[8px]">{date}</p>
     </div>
   );
 };
 
-export default NavDate;
+export default CurrentDate;

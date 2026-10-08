@@ -2,13 +2,13 @@ import Image from 'next/image';
 import logo from '@/../public/logo-icon.png';
 import Link from 'next/link';
 import Navcategories from './Navcategories';
-import NavDate from './NavDate';
 import NavMarquee from './NavMarquee';
+import CurrentDate from './Date';
 
 const Navbar = () => {
   return (
     <div>
-      <div className=" lg:flex lg:justify-between lg:items-center md:flex md:justify-between md:items-center flex justify-center items-center mb-3 lg:w-6xl mx-auto md:w-3xl lg:mx-auto md:mx-auto w-full gap-5">
+      <div className=" lg:flex lg:justify-between lg:items-center md:flex md:justify-between md:items-center flex justify-between items-center mb-3 lg:w-6xl md:w-3xl lg:mx-auto md:mx-auto w-sm mx-auto gap-5">
         <Link href={'/'}>
           <div className="flex items-center gap-3 mt-5 ">
             <div className="bg-green-700 rounded-md">
@@ -17,16 +17,18 @@ const Navbar = () => {
 
             <div>
               <h1 className="font-bold lg:text-xl md:text-lg text-sm">বাজার দর</h1>
-              <NavDate></NavDate>
+              <CurrentDate></CurrentDate>
             </div>
           </div>
         </Link>
         <div className="flex justify-center items-center lg:gap-5 gap-1 ">
           <Link href={'/sign-in'}>
-            <button className="btn btn-ghost lg:text-xl md:text-lg text-sm">সাইন ইন</button>
+            <button className="btn lg:btn-md btn-sm btn-ghost lg:text-md md:text-md text-[8px]">সাইন ইন</button>
           </Link>
           <Link href={'/sign-up'}>
-            <button className="btn btn-active btn-success lg:text-xl md:text-lg text-sm">সাইন আপ</button>
+            <button className="btn lg:btn-md btn-sm btn-active btn-success lg:text-md md:text-md text-[8px]">
+              সাইন আপ
+            </button>
           </Link>
         </div>
       </div>
