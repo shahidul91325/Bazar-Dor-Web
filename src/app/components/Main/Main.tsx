@@ -1,3 +1,4 @@
+import AllProduct from './AllProduct';
 import PriceDecrease from './PriceDecrease';
 import PriceIncrease from './PriceIncrease';
 
@@ -6,6 +7,7 @@ const Main = () => {
     <div>
       <PriceIncrease></PriceIncrease>
       <PriceDecrease></PriceDecrease>
+      <AllProduct></AllProduct>
     </div>
   );
 };

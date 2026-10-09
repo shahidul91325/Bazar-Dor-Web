@@ -16,28 +16,17 @@ const getPrices = async (): Promise<IPriceItem[]> => {
   return res.json();
 };
 
-// 54 -> ৫৪, 12.5 -> ১২.৫
 const toBn = (n: number) => n.toLocaleString('bn-BD', { maximumFractionDigits: 1, minimumFractionDigits: 0 });
 
-const PriceDecrease = async () => {
-  const all = await getPrices();
-
-  // only items that went up, biggest rise first, top 6
-  const datas = all
-    .filter((item) => item.change.dir === 'down')
-    .sort((a, b) => a.change.pct - b.change.pct)
-    .slice(0, 6);
+const AllProduct = async () => {
+  const datas = await getPrices();
 
   if (datas.length === 0) return null;
 
   return (
-    <section className=" py-8">
+    <section id="products" className="py-8">
       <div className="w-full max-w-6xl mx-auto p-4">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">
-          <span className="text-xl text-green-600">▼</span>
-          আজ দাম কমেছে
-        </h2>
-
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">সব পণ্য</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {datas.map((data) => (
             <Link href={`category/${data.id}`} key={data.id}>
@@ -60,10 +49,22 @@ const PriceDecrease = async () => {
                       <span className="text-xl font-bold">{toBn(data.today)}</span>{' '}
                       <span className="text-sm font-medium">টাকা</span>
                     </p>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-green-600">
-                      <span className="text-[9px] leading-none">▼</span>
-                      {toBn(data.change.pct)}%
-                    </span>
+                    {data.change.dir === 'up' ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-red-600">
+                        <span className="text-[9px] leading-none">▲</span>
+                        {toBn(data.change.pct)}%
+                      </span>
+                    ) : data.change.dir === 'down' ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-green-600">
+                        <span className="text-[9px] leading-none">▼</span>
+                        {toBn(data.change.pct)}%
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-gray-600">
+                        <span className="text-[9px] leading-none">●</span>
+                        {toBn(data.change.pct)}%
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -75,4 +76,4 @@ const PriceDecrease = async () => {
   );
 };
 
-export default PriceDecrease;
+export default AllProduct;

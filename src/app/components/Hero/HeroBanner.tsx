@@ -5,7 +5,14 @@ import banner from '@/../public/bazar-hero.png';
 
 const HeroBanner = () => {
   const scrollToProducts = () => {
-    document.getElementById('products')?.scrollIntoView({
+    const element = document.getElementById('products');
+
+    if (!element) return;
+
+    const y = element.getBoundingClientRect().top + window.scrollY - 140;
+
+    window.scrollTo({
+      top: y,
       behavior: 'smooth',
     });
   };
