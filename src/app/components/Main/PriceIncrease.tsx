@@ -44,8 +44,9 @@ const PriceIncrease = async () => {
               <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-emerald-50 text-2xl">
-                    <div className="h-full w-full object-cover" />
-                    {data.categoryIcon}
+                    <div className="h-full w-full object-cover flex justify-center items-center">
+                      {data.categoryIcon}
+                    </div>
                   </div>
                   <div className="min-w-0">
                     <h3 className="truncate text-base font-bold leading-tight text-slate-900">{data.nameBn}</h3>
