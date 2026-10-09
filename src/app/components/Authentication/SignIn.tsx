@@ -117,7 +117,7 @@ export default function SignIn() {
 
           <p className="mt-7 text-center text-sm sm:text-base">
             অ্যাকাউন্ট নেই?{' '}
-            <Link href="/signup" className="font-semibold text-[#009c4b] hover:underline">
+            <Link href="/sign-up" className="font-semibold text-[#009c4b] hover:underline">
               সাইন আপ করুন
             </Link>
           </p>
