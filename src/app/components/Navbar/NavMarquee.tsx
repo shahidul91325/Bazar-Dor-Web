@@ -22,8 +22,8 @@ const NavMarquee = async () => {
         const direction = data.change.dir;
 
         return (
-          <div key={data.id} className="mr-5 mt-2">
-            <Link href={`/category/${data.slug}`}>
+          <div key={data.id} className="my-5 mx-3">
+            <Link href={`/category/${data.id}`}>
               <div className="flex items-center justify-center gap-2 whitespace-nowrap">
                 <p className="md:text-lg text-[8px]">{data.image}</p>
                 <p className="md:text-lg text-[8px]">{data.nameBn}</p>

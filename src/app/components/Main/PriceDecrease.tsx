@@ -19,12 +19,12 @@ const getPrices = async (): Promise<IPriceItem[]> => {
 // 54 -> ৫৪, 12.5 -> ১২.৫
 const toBn = (n: number) => n.toLocaleString('bn-BD', { maximumFractionDigits: 1, minimumFractionDigits: 0 });
 
-const PriceIncrease = async () => {
+const PriceDecrease = async () => {
   const all = await getPrices();
 
   // only items that went up, biggest rise first, top 6
   const datas = all
-    .filter((item) => item.change.dir === 'up')
+    .filter((item) => item.change.dir === 'down')
     .sort((a, b) => b.change.pct - a.change.pct)
     .slice(0, 6);
 
@@ -34,8 +34,8 @@ const PriceIncrease = async () => {
     <section className=" py-8">
       <div className="w-full max-w-6xl mx-auto p-4">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">
-          <span className="text-xl text-red-600">▲</span>
-          আজ দাম বেড়েছে
+          <span className="text-xl text-green-600">▼</span>
+          আজ দাম কমেছে
         </h2>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -60,8 +60,8 @@ const PriceIncrease = async () => {
                       <span className="text-xl font-bold">{toBn(data.today)}</span>{' '}
                       <span className="text-sm font-medium">টাকা</span>
                     </p>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-red-600">
-                      <span className="text-[9px] leading-none">▲</span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-900/5 bg-white px-2.5 py-1 text-xs font-semibold text-green-600">
+                      <span className="text-[9px] leading-none">▼</span>
                       {toBn(data.change.pct)}%
                     </span>
                   </div>
@@ -75,4 +75,4 @@ const PriceIncrease = async () => {
   );
 };
 
-export default PriceIncrease;
+export default PriceDecrease;

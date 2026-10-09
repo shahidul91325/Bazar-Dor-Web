@@ -10,7 +10,7 @@ const HeroBanner = () => {
     });
   };
   return (
-    <div className="">
+    <div>
       <div className="w-full max-w-6xl mx-auto p-4">
         {/* Main Container */}
         <div className="relative overflow-hidden rounded-3xl bg-white border border-[#e1f0e6] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
