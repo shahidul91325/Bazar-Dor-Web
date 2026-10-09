@@ -1,29 +1,10 @@
 import { IPriceItem } from '@/app/Types/ProductData';
 import Link from 'next/link';
 
-// TODO: replace this URL with your real prices endpoint
-const getPrices = async (): Promise<IPriceItem[]> => {
-  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/products', {
-    next: {
-      revalidate: 10,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch prices');
-  }
-
-  return res.json();
-};
-
-// 54 -> ৫৪, 12.5 -> ১২.৫
 const toBn = (n: number) => n.toLocaleString('bn-BD', { maximumFractionDigits: 1, minimumFractionDigits: 0 });
 
-const PriceIncrease = async () => {
-  const all = await getPrices();
-
-  // only items that went up, biggest rise first, top 6
-  const datas = all
+const PriceIncrease = async ({ alldatas }: { alldatas: IPriceItem[] }) => {
+  const datas = alldatas
     .filter((item) => item.change.dir === 'up')
     .sort((a, b) => b.change.pct - a.change.pct)
     .slice(0, 6);

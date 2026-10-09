@@ -1,34 +1,17 @@
 import { IPriceItem } from '@/app/Types/ProductData';
 import Link from 'next/link';
 
-// TODO: replace this URL with your real prices endpoint
-const getPrices = async (): Promise<IPriceItem[]> => {
-  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/products', {
-    next: {
-      revalidate: 10,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch prices');
-  }
-
-  return res.json();
-};
-
 const toBn = (n: number) => n.toLocaleString('bn-BD', { maximumFractionDigits: 1, minimumFractionDigits: 0 });
 
-const AllProduct = async () => {
-  const datas = await getPrices();
-
-  if (datas.length === 0) return null;
+const AllProduct = ({ alldatas }: { alldatas: IPriceItem[] }) => {
+  if (alldatas.length === 0) return null;
 
   return (
     <section id="products" className="py-8">
       <div className="w-full max-w-6xl mx-auto p-4">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">সব পণ্য</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {datas.map((data) => (
+          {alldatas.map((data) => (
             <Link href={`category/${data.id}`} key={data.id}>
               <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
                 <div className="flex items-center gap-3">

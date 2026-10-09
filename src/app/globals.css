@@ -1,2 +1,11 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+
+/* form control start  */
+.form-control {
+  @apply flex flex-col mt-6 w-full;
+}
+.input {
+  @apply py-2 outline-none w-full px-4 border focus:border-emerald-900/20 border-emerald-900/10;
+}
+/* form control end  */
