@@ -1,6 +1,6 @@
 import MarqueeText from 'react-marquee-text';
 import 'react-marquee-text/dist/styles.css';
-import { IProduct } from '../../Types/ProductData';
+import { IPriceItem } from '../../Types/ProductData';
 import Link from 'next/link';
 
 const NavMarquee = async () => {
@@ -14,7 +14,7 @@ const NavMarquee = async () => {
     throw new Error('Failed to fetch products');
   }
 
-  const datas: IProduct[] = await res.json();
+  const datas: IPriceItem[] = await res.json();
 
   return (
     <MarqueeText direction="right" duration={15}>
