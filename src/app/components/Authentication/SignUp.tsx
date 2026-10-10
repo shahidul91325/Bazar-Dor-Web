@@ -4,6 +4,7 @@ import { authClient } from '@/app/lib/auth-client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 function GoogleIcon() {
   return (
@@ -92,7 +93,7 @@ export default function SignUp() {
         name,
         email,
         password,
-        callbackURL: '/',
+        callbackURL: '/sign-in',
       });
 
       if (error) {
@@ -101,7 +102,7 @@ export default function SignUp() {
       }
 
       if (data) {
-        router.replace('/');
+        router.replace('/sign-in');
         router.refresh();
       } else {
         setErrorMessage('অ্যাকাউন্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।');
@@ -112,6 +113,8 @@ export default function SignUp() {
     } finally {
       setLoading(false);
     }
+    toast.success('Signup successful! Please sign in.');
+    router.push('/sign-in');
   };
 
   const handleSocialSignIn = async (provider: 'google' | 'github') => {
@@ -164,7 +167,7 @@ export default function SignUp() {
                 id="name"
                 name="name"
                 type="text"
-                placeholder="যেমন: শহিদ উদ্দিন"
+                placeholder="যেমন: রহিম উদ্দিন"
                 autoComplete="name"
                 required
                 disabled={loading}
