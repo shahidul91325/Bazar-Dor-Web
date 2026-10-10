@@ -12,7 +12,7 @@ const AllProduct = ({ alldatas }: { alldatas: IPriceItem[] }) => {
         <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">সব পণ্য</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {alldatas.map((data) => (
-            <Link href={`category/${data.id}`} key={data.id}>
+            <Link href={`product/${data.id}`} key={data.id}>
               <div className="rounded-2xl border border-emerald-900/10 bg-white p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-emerald-50 text-2xl">

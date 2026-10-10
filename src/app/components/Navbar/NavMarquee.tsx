@@ -23,7 +23,7 @@ const NavMarquee = async () => {
 
         return (
           <div key={data.id} className="my-5 mx-3">
-            <Link href={`/category/${data.id}`}>
+            <Link href={`/product/${data.id}`}>
               <div className="flex items-center justify-center gap-2 whitespace-nowrap">
                 <p className="md:text-lg text-[8px]">{data.image}</p>
                 <p className="md:text-lg text-[8px]">{data.nameBn}</p>
