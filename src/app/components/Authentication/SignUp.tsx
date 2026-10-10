@@ -1,4 +1,9 @@
+'use client';
+
+import { authClient } from '@/app/lib/auth-client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 function GoogleIcon() {
   return (
@@ -28,7 +33,111 @@ function GithubIcon() {
   );
 }
 
+function EyeIcon({ visible }: { visible: boolean }) {
+  return visible ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="m3 3 18 18" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export default function SignUp() {
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'github' | ''>('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSignUpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    const formData = new FormData(e.currentTarget);
+
+    const name = String(formData.get('name') ?? '').trim();
+    const email = String(formData.get('email') ?? '')
+      .trim()
+      .toLowerCase();
+    const password = String(formData.get('password') ?? '');
+    const confirmPassword = String(formData.get('confirmPassword') ?? '');
+
+    if (!name || !email || !password || !confirmPassword) {
+      setErrorMessage('সবগুলো ঘর পূরণ করুন।');
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMessage('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage('দুটি পাসওয়ার্ড মিলছে না।');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        callbackURL: '/',
+      });
+
+      if (error) {
+        setErrorMessage(error.message || 'অ্যাকাউন্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।');
+        return;
+      }
+
+      if (data) {
+        router.replace('/');
+        router.refresh();
+      } else {
+        setErrorMessage('অ্যাকাউন্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।');
+      }
+    } catch (error) {
+      console.error('Sign-up error:', error);
+      setErrorMessage('একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialSignIn = async (provider: 'google' | 'github') => {
+    setErrorMessage('');
+    setSocialLoading(provider);
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider,
+        callbackURL: '/',
+      });
+
+      if (error) {
+        setErrorMessage(error.message || 'Social sign-in ব্যর্থ হয়েছে।');
+      }
+    } catch (error) {
+      console.error('Social sign-in error:', error);
+      setErrorMessage('Social sign-in করতে সমস্যা হয়েছে।');
+    } finally {
+      setSocialLoading('');
+    }
+  };
+
+  const inputClass =
+    'h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 disabled:opacity-60';
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#edf6f0] px-4 py-10 text-[#1c2c23] sm:px-6">
       <div className="w-full max-w-[496px]">
@@ -40,7 +149,13 @@ export default function SignUp() {
         </div>
 
         <section className="rounded-[20px] border border-[#dce9df] bg-[#f9fcfa] p-5 shadow-sm sm:p-7 md:p-8">
-          <form action="#" className="space-y-4">
+          <form onSubmit={handleSignUpSubmit} className="space-y-4">
+            {errorMessage && (
+              <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-700">
+                {errorMessage}
+              </p>
+            )}
+
             <div>
               <label htmlFor="name" className="mb-2 block text-sm font-semibold">
                 নাম
@@ -52,7 +167,8 @@ export default function SignUp() {
                 placeholder="যেমন: শহিদ উদ্দিন"
                 autoComplete="name"
                 required
-                className="h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10"
+                disabled={loading}
+                className={inputClass}
               />
             </div>
 
@@ -67,7 +183,8 @@ export default function SignUp() {
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
-                className="h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10"
+                disabled={loading}
+                className={inputClass}
               />
             </div>
 
@@ -75,39 +192,67 @@ export default function SignUp() {
               <label htmlFor="password" className="mb-2 block text-sm font-semibold">
                 পাসওয়ার্ড
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="কমপক্ষে ৮ অক্ষর"
-                autoComplete="new-password"
-                minLength={8}
-                required
-                className="h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="কমপক্ষে ৮ অক্ষর"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                  disabled={loading}
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখান'}
+                  aria-pressed={showPassword}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] hover:text-[#009c4b]"
+                >
+                  <EyeIcon visible={showPassword} />
+                </button>
+              </div>
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="mb-2 block text-sm font-semibold">
                 পাসওয়ার্ড নিশ্চিত করুন
               </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="আবার লিখুন"
-                autoComplete="new-password"
-                minLength={8}
-                required
-                className="h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10"
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="আবার লিখুন"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                  disabled={loading}
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  aria-label={showConfirmPassword ? 'নিশ্চিতকরণ পাসওয়ার্ড লুকান' : 'নিশ্চিতকরণ পাসওয়ার্ড দেখান'}
+                  aria-pressed={showConfirmPassword}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] hover:text-[#009c4b]"
+                >
+                  <EyeIcon visible={showConfirmPassword} />
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="mt-1 h-12 w-full rounded-lg bg-[#009c4b] text-sm font-bold text-white shadow-[0_3px_0_#007b3b] transition hover:bg-[#008841] active:translate-y-0.5 active:shadow-none"
+              disabled={loading || !!socialLoading}
+              className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#009c4b] text-sm font-bold text-white shadow-[0_3px_0_#007b3b] transition hover:bg-[#008841] active:translate-y-0.5 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
-              অ্যাকাউন্ট তৈরি করুন
+              {loading && (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+              )}
+              {loading ? 'অ্যাকাউন্ট তৈরি হচ্ছে...' : 'অ্যাকাউন্ট তৈরি করুন'}
             </button>
           </form>
 
@@ -120,18 +265,22 @@ export default function SignUp() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
-              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-[#dce8df] px-2 text-xs font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] sm:text-sm"
+              disabled={loading || !!socialLoading}
+              onClick={() => handleSocialSignIn('google')}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-[#dce8df] px-2 text-xs font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:opacity-60 sm:text-sm"
             >
               <GoogleIcon />
-              Google দিয়ে চালিয়ে যান
+              {socialLoading === 'google' ? 'অপেক্ষা করুন...' : 'Google দিয়ে চালিয়ে যান'}
             </button>
 
             <button
               type="button"
-              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-[#dce8df] px-2 text-xs font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] sm:text-sm"
+              disabled={loading || !!socialLoading}
+              onClick={() => handleSocialSignIn('github')}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-[#dce8df] px-2 text-xs font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:opacity-60 sm:text-sm"
             >
               <GithubIcon />
-              GitHub দিয়ে চালিয়ে যান
+              {socialLoading === 'github' ? 'অপেক্ষা করুন...' : 'GitHub দিয়ে চালিয়ে যান'}
             </button>
           </div>
 

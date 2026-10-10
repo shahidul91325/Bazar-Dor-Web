@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Navcategories from './Navcategories';
 import NavMarquee from './NavMarquee';
 import CurrentDate from './Date';
+import ProfileDropdown from './UserInfo';
 
 const Navbar = () => {
   return (
@@ -21,16 +22,7 @@ const Navbar = () => {
             </div>
           </div>
         </Link>
-        <div className="flex justify-center items-center lg:gap-5 gap-1 ">
-          <Link href={'/sign-in'}>
-            <button className="btn lg:btn-md btn-sm btn-ghost lg:text-lg md:text-md text-[8px]">সাইন ইন</button>
-          </Link>
-          <Link href={'/sign-up'}>
-            <button className="btn lg:btn-md btn-sm btn-active btn-success lg:text-lg md:text-md text-[8px]">
-              সাইন আপ
-            </button>
-          </Link>
-        </div>
+        <ProfileDropdown></ProfileDropdown>
       </div>
       <div className=" border-b-1 border-gray-100 w-full "></div>
       <Navcategories></Navcategories>

@@ -1,8 +1,13 @@
+'use client';
+
+import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { authClient } from '@/app/lib/auth-client';
 
 function GoogleIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
+    <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0" aria-hidden="true">
       <path
         fill="#4285F4"
         d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.7c3.9-3.6 6-8.8 6-15Z"
@@ -22,32 +27,129 @@ function GoogleIcon() {
 
 function GithubIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0" aria-hidden="true">
       <path d="M12 .9a11.2 11.2 0 0 0-3.54 21.82c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 .1.9 2.1 3.4 1.55.1-.73.4-1.22.72-1.5-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.16-3-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.13-1.45 3.08-1.15 3.08-1.15.61 1.55.23 2.7.11 2.98.72.78 1.16 1.78 1.16 3 0 4.29-2.61 5.23-5.1 5.51.41.36.77 1.03.77 2.08v3.08c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .9Z" />
     </svg>
   );
 }
 
+function EyeIcon({ visible }: { visible: boolean }) {
+  return visible ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="m3 3 18 18" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export default function SignIn() {
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'github' | ''>('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSignInSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    const formData = new FormData(e.currentTarget);
+
+    const email = String(formData.get('email') ?? '')
+      .trim()
+      .toLowerCase();
+
+    const password = String(formData.get('password') ?? '');
+
+    if (!email || !password) {
+      setErrorMessage('ইমেইল ও পাসওয়ার্ড লিখুন।');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: '/',
+      });
+
+      if (error) {
+        setErrorMessage(error.message || 'সাইন ইন করা যায়নি। তথ্যগুলো যাচাই করুন।');
+        return;
+      }
+
+      if (data) {
+        router.replace('/');
+        router.refresh();
+      } else {
+        setErrorMessage('সাইন ইন করা যায়নি। আবার চেষ্টা করুন।');
+      }
+    } catch (error) {
+      console.error('Sign-in error:', error);
+      setErrorMessage('একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialSignIn = async (provider: 'google' | 'github') => {
+    setErrorMessage('');
+    setSocialLoading(provider);
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider,
+        callbackURL: '/',
+      });
+
+      if (error) {
+        setErrorMessage(error.message || 'Social sign-in ব্যর্থ হয়েছে।');
+      }
+    } catch (error) {
+      console.error('Social sign-in error:', error);
+      setErrorMessage('সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    } finally {
+      setSocialLoading('');
+    }
+  };
+
+  const inputClass =
+    'h-12 w-full rounded-xl border border-[#dce8df] bg-transparent px-4 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 disabled:opacity-60 sm:text-base';
+
   return (
     <div className="flex min-h-screen flex-col bg-[#edf6f0] text-[#1c2c23]">
-      {/* Main content */}
       <main className="flex flex-1 flex-col items-center px-4 pb-16 pt-12 sm:px-6 sm:pt-14 lg:pt-12">
         <div className="mb-7 text-center sm:mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">সাইন ইন</h1>
+
           <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#748078] sm:text-base">
             বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে
             <br className="hidden sm:block" /> লগইন করুন।
           </p>
         </div>
 
-        {/* Sign-in card */}
         <section className="w-full max-w-[496px] rounded-[22px] border border-[#dce9df] bg-[#f9fcfa] p-5 shadow-sm sm:p-7 md:p-8">
-          <form action="#" className="space-y-5">
+          <form onSubmit={handleSignInSubmit} className="space-y-5">
+            {errorMessage && (
+              <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-700">
+                {errorMessage}
+              </p>
+            )}
+
             <div>
               <label htmlFor="email" className="mb-2 block text-sm font-bold sm:text-base">
                 ইমেইল
               </label>
+
               <input
                 id="email"
                 name="email"
@@ -55,7 +157,8 @@ export default function SignIn() {
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
-                className="h-12 w-full rounded-xl border border-[#dce8df] bg-transparent px-4 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 sm:text-base"
+                disabled={loading || !!socialLoading}
+                className={inputClass}
               />
             </div>
 
@@ -63,16 +166,29 @@ export default function SignIn() {
               <label htmlFor="password" className="mb-2 block text-sm font-bold sm:text-base">
                 পাসওয়ার্ড
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="কমপক্ষে ৮ অক্ষর"
-                autoComplete="current-password"
-                minLength={8}
-                required
-                className="h-12 w-full rounded-xl border border-[#dce8df] bg-transparent px-4 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 sm:text-base"
-              />
+
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="আপনার পাসওয়ার্ড লিখুন"
+                  autoComplete="current-password"
+                  required
+                  disabled={loading || !!socialLoading}
+                  className={`${inputClass} pr-12`}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখান'}
+                  aria-pressed={showPassword}
+                  className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-[#748078] transition hover:text-[#009c4b]"
+                >
+                  <EyeIcon visible={showPassword} />
+                </button>
+              </div>
             </div>
 
             <div className="flex justify-end">
@@ -83,35 +199,42 @@ export default function SignIn() {
 
             <button
               type="submit"
-              className="h-12 w-full rounded-xl bg-[#009c4b] text-base font-bold text-white shadow-[0_4px_0_#007b3b] transition hover:bg-[#008841] active:translate-y-0.5 active:shadow-none"
+              disabled={loading || !!socialLoading}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#009c4b] text-base font-bold text-white shadow-[0_4px_0_#007b3b] transition hover:bg-[#008841] active:translate-y-0.5 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
-              সাইন ইন
+              {loading && (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+              )}
+
+              {loading ? 'সাইন ইন হচ্ছে...' : 'সাইন ইন'}
             </button>
           </form>
 
-          {/* Divider */}
           <div className="my-6 flex items-center gap-4">
             <div className="h-px flex-1 bg-[#dce6df]" />
             <span className="text-sm text-[#68746c]">অথবা</span>
             <div className="h-px flex-1 bg-[#dce6df]" />
           </div>
 
-          {/* Social buttons */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
-              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2]"
+              disabled={loading || !!socialLoading}
+              onClick={() => handleSocialSignIn('google')}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <GoogleIcon />
-              Google দিয়ে চালিয়ে যান
+              {socialLoading === 'google' ? 'অপেক্ষা করুন...' : 'Google দিয়ে চালিয়ে যান'}
             </button>
 
             <button
               type="button"
-              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2]"
+              disabled={loading || !!socialLoading}
+              onClick={() => handleSocialSignIn('github')}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <GithubIcon />
-              GitHub দিয়ে চালিয়ে যান
+              {socialLoading === 'github' ? 'অপেক্ষা করুন...' : 'GitHub দিয়ে চালিয়ে যান'}
             </button>
           </div>
 
@@ -122,6 +245,10 @@ export default function SignIn() {
             </Link>
           </p>
         </section>
+
+        <Link href="/" className="mt-5 block text-center text-sm text-[#748078] transition hover:text-[#009c4b]">
+          ← হোম পেজে ফিরে যান
+        </Link>
       </main>
     </div>
   );
