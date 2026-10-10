@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ICategoryData } from '../../Types/Category';
 
 const getCategories = async () => {
-  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/categories', {
+  const res = await fetch('https://openapi.programming-hero.com/api/bazardor/categories', {
     next: {
       revalidate: 10,
     },

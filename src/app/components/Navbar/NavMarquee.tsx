@@ -4,7 +4,7 @@ import { IPriceItem } from '../../Types/ProductData';
 import Link from 'next/link';
 
 const NavMarquee = async () => {
-  const res = await fetch('https://api.abcz.workers.dev/api/bazardor/products', {
+  const res = await fetch('https://openapi.programming-hero.com/api/bazardor/products', {
     next: {
       revalidate: 10,
     },

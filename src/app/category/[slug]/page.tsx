@@ -7,11 +7,14 @@ interface PageProps {
 }
 const CategoryDetailPage = async ({ params }: PageProps) => {
   const { slug } = await params;
-  const res = await fetch(`https://api.abcz.workers.dev/api/bazardor/products?category=${encodeURIComponent(slug)}`, {
-    next: {
-      revalidate: 10,
-    },
-  });
+  const res = await fetch(
+    `https://openapi.programming-hero.com/api/bazardor/products?category=${encodeURIComponent(slug)}`,
+    {
+      next: {
+        revalidate: 10,
+      },
+    }
+  );
 
   if (!res.ok) {
     throw new Error('Failed to fetch products');

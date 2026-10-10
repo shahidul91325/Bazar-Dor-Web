@@ -7,7 +7,7 @@ interface PageProps {
 }
 const ProductDetailPage = async ({ params }: PageProps) => {
   const { id } = await params;
-  const res = await fetch(`https://api.abcz.workers.dev/api/bazardor/products/${id}`, {
+  const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products/${id}`, {
     next: {
       revalidate: 10,
     },
