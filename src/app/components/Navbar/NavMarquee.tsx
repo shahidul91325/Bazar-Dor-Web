@@ -17,7 +17,7 @@ const NavMarquee = async () => {
   const datas: IPriceItem[] = await res.json();
 
   return (
-    <MarqueeText direction="right" duration={15}>
+    <MarqueeText direction="right" duration={10}>
       {datas.map((data) => {
         const direction = data.change.dir;
 

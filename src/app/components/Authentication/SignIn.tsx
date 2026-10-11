@@ -188,7 +188,6 @@ export default function SignIn() {
 
         showError(getAuthErrorMessage(result.error as AuthError));
       }
-
       // Social sign-in সাধারণত provider-এর পেজে redirect করে।
       // সফল redirect-এর পর callbackURL-এ ফিরে আসবে।
     } catch (error: unknown) {

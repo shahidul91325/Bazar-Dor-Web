@@ -60,11 +60,14 @@ function EyeIcon({ visible }: { visible: boolean }) {
 function getAuthErrorMessage(error: AuthError): string {
   const text = `${error.code ?? ''} ${error.message ?? ''}`.toLowerCase();
 
+  // Duplicate email or existing account
   if (
     error.status === 409 ||
-    /already exists|already registered|user already exists|duplicate|email.*taken/.test(text)
+    /already exists|already registered|user already exists|duplicate|email.*taken|user.*already|account.*exists|email.*already|unique constraint|unique index/.test(
+      text
+    )
   ) {
-    return 'এই ইমেইল দিয়ে ইতোমধ্যে অ্যাকাউন্ট খোলা হয়েছে। সাইন ইন করুন।';
+    return 'এই Gmail দিয়ে ইতোমধ্যে অ্যাকাউন্ট তৈরি করা আছে। অনুগ্রহ করে সাইন ইন করুন।';
   }
 
   if (/invalid email|email.*invalid/.test(text)) {
@@ -108,6 +111,7 @@ export default function SignUp() {
   const inputClass =
     'h-11 w-full rounded-lg border border-[#dce8df] bg-transparent px-3 text-sm outline-none transition placeholder:text-[#748078] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 disabled:cursor-not-allowed disabled:opacity-60';
 
+  // Show inline error and toast together
   const showFormError = (message: string) => {
     setErrorMessage(message);
     toast.error(message);
@@ -129,16 +133,19 @@ export default function SignUp() {
     const password = String(formData.get('password') ?? '');
     const confirmPassword = String(formData.get('confirmPassword') ?? '');
 
+    // Required fields
     if (!name || !email || !password || !confirmPassword) {
       showFormError('সবগুলো ঘর পূরণ করুন।');
       return;
     }
 
+    // Email validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       showFormError('সঠিক ইমেইল ঠিকানা লিখুন।');
       return;
     }
 
+    // Password validation
     if (password.length < 8) {
       showFormError('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।');
       return;
@@ -208,11 +215,12 @@ export default function SignUp() {
     } catch (error: unknown) {
       console.error('Social sign-in failed:', error);
 
-      showFormError(
+      const message =
         error instanceof Error && /network|fetch failed|failed to fetch|load failed/i.test(error.message)
           ? 'সার্ভারের সঙ্গে সংযোগ করা যাচ্ছে না।'
-          : `${provider === 'google' ? 'Google' : 'GitHub'} দিয়ে সাইন আপ করা যায়নি। আবার চেষ্টা করুন।`
-      );
+          : `${provider === 'google' ? 'Google' : 'GitHub'} দিয়ে সাইন আপ করা যায়নি। আবার চেষ্টা করুন।`;
+
+      showFormError(message);
     } finally {
       setSocialLoading('');
     }
@@ -221,6 +229,7 @@ export default function SignUp() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#edf6f0] px-4 py-10 text-[#1c2c23] sm:px-6">
       <div className="w-full max-w-[496px]">
+        {/* Page heading */}
         <div className="mb-7 text-center">
           <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">অ্যাকাউন্ট তৈরি করুন</h1>
 
@@ -229,14 +238,21 @@ export default function SignUp() {
           </p>
         </div>
 
+        {/* Signup form */}
         <section className="rounded-[20px] border border-[#dce9df] bg-[#f9fcfa] p-5 shadow-sm sm:p-7 md:p-8">
           <form onSubmit={handleSignUpSubmit} noValidate className="space-y-4">
+            {/* Inline error */}
             {errorMessage && (
-              <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-700">
+              <p
+                role="alert"
+                aria-live="polite"
+                className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-700"
+              >
                 {errorMessage}
               </p>
             )}
 
+            {/* Name */}
             <div>
               <label htmlFor="name" className="mb-2 block text-sm font-semibold">
                 নাম
@@ -254,6 +270,7 @@ export default function SignUp() {
               />
             </div>
 
+            {/* Email */}
             <div>
               <label htmlFor="email" className="mb-2 block text-sm font-semibold">
                 ইমেইল
@@ -271,6 +288,7 @@ export default function SignUp() {
               />
             </div>
 
+            {/* Password */}
             <div>
               <label htmlFor="password" className="mb-2 block text-sm font-semibold">
                 পাসওয়ার্ড
@@ -283,6 +301,7 @@ export default function SignUp() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="কমপক্ষে ৮ অক্ষর"
                   autoComplete="new-password"
+                  minLength={8}
                   required
                   disabled={isBusy}
                   className={`${inputClass} pr-12`}
@@ -293,13 +312,15 @@ export default function SignUp() {
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখান'}
                   aria-pressed={showPassword}
-                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] transition hover:text-[#009c4b]"
+                  disabled={isBusy}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] transition hover:text-[#009c4b] disabled:cursor-not-allowed"
                 >
                   <EyeIcon visible={showPassword} />
                 </button>
               </div>
             </div>
 
+            {/* Confirm password */}
             <div>
               <label htmlFor="confirmPassword" className="mb-2 block text-sm font-semibold">
                 পাসওয়ার্ড নিশ্চিত করুন
@@ -322,13 +343,15 @@ export default function SignUp() {
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                   aria-label={showConfirmPassword ? 'নিশ্চিতকরণ পাসওয়ার্ড লুকান' : 'নিশ্চিতকরণ পাসওয়ার্ড দেখান'}
                   aria-pressed={showConfirmPassword}
-                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] transition hover:text-[#009c4b]"
+                  disabled={isBusy}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-[#748078] transition hover:text-[#009c4b] disabled:cursor-not-allowed"
                 >
                   <EyeIcon visible={showConfirmPassword} />
                 </button>
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={isBusy}
@@ -342,12 +365,16 @@ export default function SignUp() {
             </button>
           </form>
 
+          {/* Divider */}
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#dce6df]" />
+
             <span className="text-xs text-[#68746c]">অথবা</span>
+
             <div className="h-px flex-1 bg-[#dce6df]" />
           </div>
 
+          {/* Social signup */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
@@ -361,7 +388,7 @@ export default function SignUp() {
                 <GoogleIcon />
               )}
 
-              {socialLoading === 'google' ? 'অপেক্ষা করুন...' : 'Google দিয়ে চালিয়ে যান'}
+              <span>{socialLoading === 'google' ? 'অপেক্ষা করুন...' : 'Google দিয়ে চালিয়ে যান'}</span>
             </button>
 
             <button
@@ -376,10 +403,11 @@ export default function SignUp() {
                 <GithubIcon />
               )}
 
-              {socialLoading === 'github' ? 'অপেক্ষা করুন...' : 'GitHub দিয়ে চালিয়ে যান'}
+              <span>{socialLoading === 'github' ? 'অপেক্ষা করুন...' : 'GitHub দিয়ে চালিয়ে যান'}</span>
             </button>
           </div>
 
+          {/* Sign in link */}
           <p className="mt-6 text-center text-sm">
             অ্যাকাউন্ট আছে?{' '}
             <Link href="/sign-in" className="font-semibold text-[#009c4b] hover:underline">
@@ -388,6 +416,7 @@ export default function SignUp() {
           </p>
         </section>
 
+        {/* Home link */}
         <Link href="/" className="mt-5 block text-center text-sm text-[#748078] transition hover:text-[#009c4b]">
           ← হোম পেজে ফিরে যান
         </Link>
