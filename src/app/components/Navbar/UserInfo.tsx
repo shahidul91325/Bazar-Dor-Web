@@ -3,29 +3,64 @@
 import { useState } from 'react';
 import { authClient } from '@/app/lib/auth-client';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
+
   const handleSignOut = async () => {
-    await authClient.signOut();
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+
+    try {
+      const { error } = await authClient.signOut();
+
+      if (error) {
+        toast.error('সাইন আউট করা যায়নি! আবার চেষ্টা করুন।');
+        return;
+      }
+
+      setIsOpen(false);
+      toast.success('সফলভাবে সাইন আউট হয়েছে!');
+    } catch {
+      toast.error('কিছু একটা সমস্যা হয়েছে! আবার চেষ্টা করুন।');
+    } finally {
+      setIsSigningOut(false);
+    }
   };
 
   if (isPending) {
-    return null;
+    return (
+      <div
+        className="flex animate-pulse items-center gap-2 rounded-lg px-2 py-2"
+        role="status"
+        aria-label="Loading profile"
+      >
+        <div className="h-9 w-9 shrink-0 rounded-full bg-gray-200" />
+
+        <div className="hidden flex-col gap-2 sm:flex">
+          <div className="h-3 w-20 rounded bg-gray-200" />
+          <div className="h-2.5 w-28 rounded bg-gray-200" />
+        </div>
+      </div>
+    );
   }
+
   return (
     <div>
       {user ? (
         <div className="relative inline-block">
-          {/* Profile Name + Image */}
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
             className="flex items-center gap-2 rounded-lg px-2 py-2 transition hover:bg-gray-100"
           >
-            {/* Profile Image or Default Icon */}
             {user.image ? (
               <img
                 src={user.image}
@@ -50,18 +85,15 @@ export default function ProfileDropdown() {
             )}
 
             <span className="max-w-28 truncate text-sm font-semibold text-[#1b2d23] sm:max-w-40 sm:text-base">
-              {user?.name}
+              {user.name}
             </span>
 
             <span className={`text-xs text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>
           </button>
 
-          {/* Dropdown Card */}
           {isOpen && (
             <div className="absolute right-0 top-full z-50 mt-2 w-[min(280px,calc(100vw-24px))] rounded-xl border border-[#dce9df] bg-white p-4 shadow-lg sm:w-[300px] sm:p-5">
-              {/* User Information */}
               <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-                {/* Dropdown Profile Image or Default Icon */}
                 {user.image ? (
                   <img
                     src={user.image}
@@ -86,13 +118,12 @@ export default function ProfileDropdown() {
                 )}
 
                 <div className="min-w-0 flex-1">
-                  <h2 className="truncate text-base font-semibold text-[#1b2d23]">{user?.name}</h2>
+                  <h2 className="truncate text-base font-semibold text-[#1b2d23]">{user.name}</h2>
 
-                  <p className="mt-1 break-all text-xs text-[#657168] sm:text-sm">{user?.email}</p>
+                  <p className="mt-1 break-all text-xs text-[#657168] sm:text-sm">{user.email}</p>
                 </div>
               </div>
 
-              {/* Edit Profile */}
               <button
                 type="button"
                 onClick={() => {
@@ -105,14 +136,14 @@ export default function ProfileDropdown() {
                 <span>আমার প্রোফাইল</span>
               </button>
 
-              {/* Sign Out */}
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="mt-1 flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-red-500 transition hover:bg-red-50"
+                disabled={isSigningOut}
+                className="mt-1 flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-red-500 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span>↩</span>
-                <span>সাইন আউট</span>
+                <span>{isSigningOut ? 'সাইন আউট হচ্ছে...' : 'সাইন আউট'}</span>
               </button>
             </div>
           )}

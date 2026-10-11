@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/app/lib/auth-client';
+import { toast } from 'react-toastify';
 
 function GoogleIcon() {
   return (
@@ -35,17 +36,66 @@ function GithubIcon() {
 
 function EyeIcon({ visible }: { visible: boolean }) {
   return visible ? (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5" aria-hidden="true">
       <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
       <circle cx="12" cy="12" r="3" />
-      <path d="m3 3 18 18" />
     </svg>
   ) : (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-5 w-5" aria-hidden="true">
-      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
-      <circle cx="12" cy="12" r="3" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="h-5 w-5" aria-hidden="true">
+      <path d="M3 3l18 18" />
+      <path d="M10.6 5.2A11.8 11.8 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3.2 4.1" />
+      <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.4 0 2.6-.3 3.7-.8" />
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
     </svg>
   );
+}
+
+type AuthError = {
+  message?: string;
+  code?: string;
+  status?: number;
+};
+
+function getAuthErrorMessage(error: AuthError): string {
+  const errorText = `${error.code ?? ''} ${error.message ?? ''}`.toLowerCase();
+
+  if (/invalid email or password|invalid credentials|invalid password|credential.*invalid/.test(errorText)) {
+    return 'ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।';
+  }
+
+  if (/email not verified|email.*unverified/.test(errorText)) {
+    return 'সাইন ইন করার আগে ইমেইল ভেরিফাই করুন।';
+  }
+
+  if (/user not found|account not found/.test(errorText)) {
+    return 'এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি।';
+  }
+
+  if (/too many requests|rate limit/.test(errorText)) {
+    return 'অনেকবার চেষ্টা করেছেন। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+  }
+
+  if (/network|fetch failed|failed to fetch|econnrefused/.test(errorText)) {
+    return 'সার্ভারের সঙ্গে সংযোগ করা যাচ্ছে না। ইন্টারনেট চেক করুন।';
+  }
+
+  if (/user already exists|email already exists/.test(errorText)) {
+    return 'এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট আছে।';
+  }
+
+  if (/social provider|provider.*not found/.test(errorText)) {
+    return 'এই লগইন পদ্ধতিটি বর্তমানে কাজ করছে না।';
+  }
+
+  if (error.status === 429) {
+    return 'অনেকবার চেষ্টা করেছেন। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+  }
+
+  if (error.status && error.status >= 500) {
+    return 'সার্ভারে সমস্যা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+  }
+
+  return 'সাইন ইন করা যায়নি। ইমেইল ও পাসওয়ার্ড চেক করে আবার চেষ্টা করুন।';
 }
 
 export default function SignIn() {
@@ -56,8 +106,19 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const inputClass =
+    'h-12 w-full rounded-xl border border-[#dce8df] bg-transparent px-4 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 disabled:opacity-60 sm:text-base';
+
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    toast.error(message);
+  };
+
   const handleSignInSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (loading || socialLoading) return;
+
     setErrorMessage('');
 
     const formData = new FormData(e.currentTarget);
@@ -68,62 +129,83 @@ export default function SignIn() {
 
     const password = String(formData.get('password') ?? '');
 
-    if (!email || !password) {
-      setErrorMessage('ইমেইল ও পাসওয়ার্ড লিখুন।');
+    if (!email || !password.trim()) {
+      showError('ইমেইল ও পাসওয়ার্ড লিখুন।');
       return;
     }
 
     setLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const result = await authClient.signIn.email({
         email,
         password,
         callbackURL: '/',
       });
 
-      if (error) {
-        setErrorMessage(error.message || 'সাইন ইন করা যায়নি। তথ্যগুলো যাচাই করুন।');
+      if (result.error) {
+        console.error('Email sign-in error:', result.error);
+
+        showError(getAuthErrorMessage(result.error as AuthError));
         return;
       }
 
-      if (data) {
-        router.replace('/');
-        router.refresh();
-      } else {
-        setErrorMessage('সাইন ইন করা যায়নি। আবার চেষ্টা করুন।');
-      }
-    } catch (error) {
-      console.error('Sign-in error:', error);
-      setErrorMessage('একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+      // Error না থাকলে sign-in request সফল হয়েছে।
+      toast.success('সফলভাবে সাইন ইন হয়েছে!', {
+        autoClose: 2500,
+      });
+
+      router.replace('/');
+      router.refresh();
+    } catch (error: unknown) {
+      console.error('Sign-in request failed:', error);
+
+      const message =
+        error instanceof Error && /network|fetch|failed to fetch|load failed/i.test(error.message)
+          ? 'সার্ভারের সঙ্গে সংযোগ করা যাচ্ছে না। ইন্টারনেট চেক করুন।'
+          : 'সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+
+      showError(message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSocialSignIn = async (provider: 'google' | 'github') => {
+    if (loading || socialLoading) return;
+
     setErrorMessage('');
     setSocialLoading(provider);
 
     try {
-      const { error } = await authClient.signIn.social({
+      const result = await authClient.signIn.social({
         provider,
         callbackURL: '/',
       });
 
-      if (error) {
-        setErrorMessage(error.message || 'Social sign-in ব্যর্থ হয়েছে।');
+      if (result.error) {
+        console.error(`${provider} sign-in error:`, result.error);
+
+        showError(getAuthErrorMessage(result.error as AuthError));
       }
-    } catch (error) {
-      console.error('Social sign-in error:', error);
-      setErrorMessage('সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+
+      // Social sign-in সাধারণত provider-এর পেজে redirect করে।
+      // সফল redirect-এর পর callbackURL-এ ফিরে আসবে।
+    } catch (error: unknown) {
+      console.error('Social sign-in failed:', error);
+
+      const message =
+        error instanceof Error && /network|fetch|failed to fetch|load failed/i.test(error.message)
+          ? 'সার্ভারের সঙ্গে সংযোগ করা যাচ্ছে না।'
+          : `${provider === 'google' ? 'Google' : 'GitHub'} দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।`;
+
+      showError(message);
     } finally {
       setSocialLoading('');
     }
   };
 
-  const inputClass =
-    'h-12 w-full rounded-xl border border-[#dce8df] bg-transparent px-4 text-sm outline-none transition placeholder:text-[#34443a] focus:border-[#009c4b] focus:ring-4 focus:ring-[#009c4b]/10 disabled:opacity-60 sm:text-base';
+  const isBusy = loading || !!socialLoading;
 
   return (
     <div className="flex min-h-screen flex-col bg-[#edf6f0] text-[#1c2c23]">
@@ -157,7 +239,7 @@ export default function SignIn() {
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
-                disabled={loading || !!socialLoading}
+                disabled={isBusy}
                 className={inputClass}
               />
             </div>
@@ -175,7 +257,7 @@ export default function SignIn() {
                   placeholder="আপনার পাসওয়ার্ড লিখুন"
                   autoComplete="current-password"
                   required
-                  disabled={loading || !!socialLoading}
+                  disabled={isBusy}
                   className={`${inputClass} pr-12`}
                 />
 
@@ -199,7 +281,7 @@ export default function SignIn() {
 
             <button
               type="submit"
-              disabled={loading || !!socialLoading}
+              disabled={isBusy}
               className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#009c4b] text-base font-bold text-white shadow-[0_4px_0_#007b3b] transition hover:bg-[#008841] active:translate-y-0.5 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading && (
@@ -219,21 +301,31 @@ export default function SignIn() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
-              disabled={loading || !!socialLoading}
+              disabled={isBusy}
               onClick={() => handleSocialSignIn('google')}
               className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <GoogleIcon />
+              {socialLoading === 'google' ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#009c4b]/30 border-t-[#009c4b]" />
+              ) : (
+                <GoogleIcon />
+              )}
+
               {socialLoading === 'google' ? 'অপেক্ষা করুন...' : 'Google দিয়ে চালিয়ে যান'}
             </button>
 
             <button
               type="button"
-              disabled={loading || !!socialLoading}
+              disabled={isBusy}
               onClick={() => handleSocialSignIn('github')}
               className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dce8df] px-3 text-sm font-bold transition hover:border-[#009c4b] hover:bg-[#f0f8f2] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <GithubIcon />
+              {socialLoading === 'github' ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#009c4b]/30 border-t-[#009c4b]" />
+              ) : (
+                <GithubIcon />
+              )}
+
               {socialLoading === 'github' ? 'অপেক্ষা করুন...' : 'GitHub দিয়ে চালিয়ে যান'}
             </button>
           </div>
