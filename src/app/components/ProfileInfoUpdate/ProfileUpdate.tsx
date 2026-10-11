@@ -1,12 +1,13 @@
 'use client';
 
 import { authClient } from '@/app/lib/auth-client';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export default function ProfilePage() {
   const { data: session, isPending, refetch } = authClient.useSession();
-
+  const router = useRouter();
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -14,6 +15,11 @@ export default function ProfilePage() {
 
   const user = session?.user;
 
+  useEffect(() => {
+    if (!isPending && !user) {
+      router.replace('/sign-in?reason=login-required');
+    }
+  }, [isPending, user, router]);
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
@@ -70,12 +76,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <main className="grid min-h-[60vh] place-items-center bg-[#edf6f0] px-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800">আপনার অ্যাকাউন্টে লগইন করুন</h1>
-          <a href="/sign-in" className="mt-4 inline-block rounded-lg bg-green-600 px-6 py-3 text-white">
-            লগইন করুন
-          </a>
-        </div>
+        <p className="text-gray-600">লগইন পেজে নেওয়া হচ্ছে...</p>
       </main>
     );
   }

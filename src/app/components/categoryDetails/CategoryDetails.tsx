@@ -42,47 +42,51 @@ const CategoriesData = ({ categoriesData }: CategoriesDataProps) => {
 
           <div className="min-w-0">
             <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
-              {categoriesData[0]?.categoryNameBn || 'সব পণ্য'}
+              {categoriesData[0]?.categoryNameBn || 'পণ্যসমূহ'}
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              {toBn(categoriesData.length)}
-              টি পণ্যের আজকের দাম ও পরিবর্তন
-            </p>
+            <p className="mt-1 text-sm text-slate-500">{toBn(categoriesData.length)} টি পণ্যের আজকের দাম ও পরিবর্তন</p>
           </div>
         </div>
 
         {/* Sorting */}
         <div className="mt-5 rounded-2xl border border-emerald-900/10 bg-[#fbfefc] p-3 sm:p-4">
-          <div className="flex items-center justify-end">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            <label htmlFor="product-sort" className="text-sm font-medium text-slate-700">
+              সাজান:
+            </label>
+
             <select
+              id="product-sort"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               aria-label="পণ্য সাজান"
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none focus:border-emerald-500 sm:w-52"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none focus:border-emerald-500 sm:w-56"
             >
               <option value="default">ডিফল্ট</option>
-              <option value="low">কম থেকে বেশি</option>
-              <option value="high">বেশি থেকে কম</option>
+              <option value="low">দাম: কম থেকে বেশি</option>
+              <option value="high">দাম: বেশি থেকে কম</option>
               <option value="change">দামের পরিবর্তন</option>
             </select>
           </div>
         </div>
 
         {/* Product count */}
-        <div className="mb-4 mt-5 flex items-center justify-between gap-3">
-          <p className="text-sm text-slate-500">মোট {toBn(filteredData.length)}টি পণ্য দেখানো হচ্ছে</p>
+        {filteredData.length > 0 && (
+          <div className="mb-4 mt-5 flex items-center justify-between gap-3">
+            <p className="text-sm text-slate-500">মোট {toBn(filteredData.length)} টি পণ্য দেখানো হচ্ছে</p>
 
-          {sortBy !== 'default' && (
-            <button
-              type="button"
-              onClick={() => setSortBy('default')}
-              className="shrink-0 text-sm font-semibold text-emerald-700 hover:underline"
-            >
-              রিসেট
-            </button>
-          )}
-        </div>
+            {sortBy !== 'default' && (
+              <button
+                type="button"
+                onClick={() => setSortBy('default')}
+                className="shrink-0 text-sm font-semibold text-emerald-700 hover:underline"
+              >
+                রিসেট
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Product cards */}
         {filteredData.length > 0 ? (
@@ -161,9 +165,26 @@ const CategoriesData = ({ categoriesData }: CategoriesDataProps) => {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-emerald-900/10 bg-[#fbfefc] px-4 py-12 text-center">
-            <p className="text-lg font-semibold text-slate-700">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।</p>
-            <p className="mt-2 text-sm text-slate-500">অন্য একটি ক্যাটাগরি নির্বাচন করে দেখুন।</p>
+          /* Empty state */
+          <div className="rounded-2xl border border-emerald-900/10 bg-[#fbfefc] px-4 py-12 text-center sm:py-16">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#eff6f0] text-4xl">
+              🔎
+            </div>
+
+            <p className="mt-5 text-2xl font-extrabold text-slate-900">404</p>
+
+            <h3 className="mt-2 text-lg font-bold text-slate-800">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</h3>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              ক্যাটাগরিটি পাওয়া যায়নি অথবা এখানে কোনো পণ্য নেই। হোম পেজে ফিরে গিয়ে অন্য পণ্য দেখুন।
+            </p>
+
+            <Link
+              href="/"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            >
+              ← হোম পেজে ফিরে যান
+            </Link>
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ const Navbar = () => {
             </div>
 
             <div>
-              <h1 className="font-bold lg:text-xl md:text-lg text-sm">বাজার দর</h1>
+              <h1 className="font-bold lg:text-xl md:text-lg text-md">বাজার দর</h1>
               <CurrentDate></CurrentDate>
             </div>
           </div>

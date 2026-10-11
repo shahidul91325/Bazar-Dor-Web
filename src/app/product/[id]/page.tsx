@@ -1,4 +1,5 @@
 import ProductDetails from '@/app/components/ProductDetails/ProductDetails';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{
@@ -18,6 +19,11 @@ const ProductDetailPage = async ({ params }: PageProps) => {
   }
 
   const productData = await res.json();
+
+  // Product খুঁজে না পেলে:
+  if (!productData) {
+    notFound();
+  }
   return (
     <div>
       <ProductDetails productData={productData}></ProductDetails>

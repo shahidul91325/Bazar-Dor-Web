@@ -10,6 +10,7 @@ const AllProduct = ({ alldatas }: { alldatas: IPriceItem[] }) => {
     <section id="products" className="py-8">
       <div className="w-full max-w-6xl mx-auto p-4">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 lg:text-2xl">সব পণ্য</h2>
+        <p className="text-md text-gray-700 mb-5">মোট {toBn(alldatas.length)} টি পণ্য দেখানো হচ্ছে</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {alldatas.map((data) => (
             <Link href={`product/${data.id}`} key={data.id}>

@@ -84,7 +84,7 @@ export default function ProfileDropdown() {
               </span>
             )}
 
-            <span className="max-w-28 truncate text-sm font-semibold text-[#1b2d23] sm:max-w-40 sm:text-base">
+            <span className="max-w-22 truncate text-sm font-semibold text-[#1b2d23] sm:max-w-35 sm:text-base">
               {user.name}
             </span>
 

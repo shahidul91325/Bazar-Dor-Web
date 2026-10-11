@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/app/lib/auth-client';
 import { toast } from 'react-toastify';
+import AuthRedirectToast from '../AuthRedirectToast/AuthRedirectToast';
 
 function GoogleIcon() {
   return (
@@ -208,6 +209,7 @@ export default function SignIn() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#edf6f0] text-[#1c2c23]">
+      <AuthRedirectToast />
       <main className="flex flex-1 flex-col items-center px-4 pb-16 pt-12 sm:px-6 sm:pt-14 lg:pt-12">
         <div className="mb-7 text-center sm:mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">সাইন ইন</h1>

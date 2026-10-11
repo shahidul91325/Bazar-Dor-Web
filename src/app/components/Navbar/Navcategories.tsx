@@ -25,8 +25,8 @@ const Navcategories = async () => {
           <div key={data.id}>
             <Link href={`/category/${data.slug}`}>
               <div className="flex justify-baseline items-center lg:gap-2">
-                <p className="lg:text-lg md:text-lg text-[8px]">{data.icon}</p>
-                <p className="lg:text-lg md:text-lg text-[8px]">{data.nameBn}</p>
+                <p className="lg:text-lg md:text-lg text-[11px]">{data.icon}</p>
+                <p className="lg:text-lg md:text-lg text-[11px]">{data.nameBn}</p>
               </div>
             </Link>
           </div>

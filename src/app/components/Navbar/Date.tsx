@@ -17,7 +17,7 @@ const CurrentDate = () => {
   }, []);
   return (
     <div>
-      <p className="lg:text-lg md:text-md text-[8px]">{date}</p>
+      <p className="lg:text-lg md:text-md text-[12px]">{date}</p>
     </div>
   );
 };
