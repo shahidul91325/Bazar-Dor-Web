@@ -1,110 +1,79 @@
 # 🛒 বাজার দর (Bazar Dor)
 
-### Daily Essential Product Prices at a Glance
+<div align="center">
 
-**Bazar Dor** is a responsive web application that helps users explore the latest prices of essential products in Bangladesh. Users can browse products, explore categories, compare market prices, and track daily price changes through an intuitive Bengali-language interface.
+![বাজার দর ওয়েবসাইটের প্রিভিউ](./public/readme-preview.png)
 
-🌐 **Live Website:** https://bazar-dor-web.vercel.app/
+### 🇧🇩 বাংলাদেশের নিত্যপ্রয়োজনীয় পণ্যের বাজারদর এক নজরে
 
-💻 **GitHub Repository:** https://github.com/shahidul91325/Bazar-Dor-Web
+**বাজার দর** একটি আধুনিক ও রেসপনসিভ ওয়েব অ্যাপ্লিকেশন, যার মাধ্যমে বাংলাদেশের নিত্যপ্রয়োজনীয় পণ্যের দাম দেখা, বিভিন্ন বাজারের দামের তুলনা করা এবং প্রতিদিনের দাম বাড়া-কমার তথ্য জানা যায়।
 
----
+🌐 **লাইভ ওয়েবসাইট:** https://bazar-dor-web.vercel.app/
 
-## ✨ Key Features
+💻 **GitHub রিপোজিটরি:** https://github.com/shahidul91325/Bazar-Dor-Web
 
-1. **📊 Daily Price Tracking** — Explore essential product prices and see daily price changes with percentage indicators.
-2. **📈 Price Increase & Decrease Sections** — Quickly identify products whose prices have increased or decreased.
-3. **🛍️ Product Browsing** — Browse products through a responsive card layout with product names, categories, units, and prices.
-4. **🗂️ Category Filtering** — Explore products by category and sort them by price from low to high or high to low.
-5. **🔎 Product Details** — View product information, minimum and maximum prices, average prices, and market-wise price comparisons.
-6. **🔐 Authentication** — Register and sign in using email and password, with Google and GitHub authentication support.
-7. **👤 Profile Management** — Access your profile and update your personal information.
-8. **📱 Fully Responsive Design** — Enjoy a consistent experience across mobile phones, tablets, and desktop devices.
-9. **⏳ Loading & Error States** — Display loading indicators, skeleton UI, and friendly error or not-found pages.
-10. **🔔 Toast Notifications** — Receive feedback for authentication actions, validation errors, and other relevant operations.
+</div>
 
 ---
 
-## 🛠️ Technologies Used
+## ✨ প্রধান বৈশিষ্ট্যসমূহ
 
-| Technology      | Purpose                                  |
-| --------------- | ---------------------------------------- |
-| Next.js         | React framework and application routing  |
-| React           | Building reusable UI components          |
-| TypeScript      | Type safety and maintainable code        |
-| Tailwind CSS    | Responsive styling                       |
-| DaisyUI         | Prebuilt UI components                   |
-| Better Auth     | Authentication and session management    |
-| MongoDB         | Database integration for authentication  |
-| React Hot Toast | Toast notifications                      |
-| Vercel          | Deployment and hosting                   |
-| REST API        | Product, category, and market price data |
+1. **📊 দৈনিক বাজারদর:** নিত্যপ্রয়োজনীয় পণ্যের বর্তমান দাম এবং দামের পরিবর্তন দেখার সুবিধা।
+2. **📈 দাম বৃদ্ধি ও হ্রাস:** যেসব পণ্যের দাম বেড়েছে বা কমেছে, সেগুলো সহজে খুঁজে দেখা।
+3. **🛍️ পণ্য ব্রাউজিং:** পণ্যের নাম, ছবি, বিভাগ, একক ও দামসহ পণ্যের তালিকা দেখা।
+4. **🗂️ বিভাগ অনুযায়ী পণ্য:** বিভিন্ন বিভাগ থেকে পণ্য খোঁজা এবং কম থেকে বেশি বা বেশি থেকে কম দামে সাজানো।
+5. **🔎 পণ্যের বিস্তারিত তথ্য:** পণ্যের সর্বনিম্ন, সর্বোচ্চ ও গড় দাম এবং বিভিন্ন বাজারের দামের তুলনা দেখা।
+6. **🔐 ব্যবহারকারী নিবন্ধন ও লগইন:** ইমেইল ও পাসওয়ার্ডের মাধ্যমে অ্যাকাউন্ট তৈরি এবং লগইন করার সুবিধা।J
 
----
+## 🛠️ ব্যবহৃত প্রযুক্তি
 
-## 🔌 API Endpoints
-
-The application uses the Bazar Dor API to retrieve product and category information.
-
-**Main API URL**
-
-`https://openapi.programming-hero.com/api/bazardor`
-
-**Alternative API URLs**
-
-- `https://api.api-store.workers.dev/api/bazardor`
-- `https://api.abcz.workers.dev/api/bazardor`
-
-### Available Endpoints
-
-| Endpoint                  | Description                   |
-| ------------------------- | ----------------------------- |
-| `/products`               | Retrieve all products         |
-| `/products?category=chal` | Retrieve products by category |
-| `/products/1`             | Retrieve a single product     |
-| `/categories`             | Retrieve all categories       |
-| `/categories/chal`        | Retrieve a single category    |
-
-Replace `chal` or `1` with the appropriate category slug or product identifier when needed.
+| প্রযুক্তি       | ব্যবহার                                       |
+| --------------- | --------------------------------------------- |
+| Next.js         | ওয়েব অ্যাপ্লিকেশন তৈরি ও রাউটিং               |
+| React           | পুনর্ব্যবহারযোগ্য UI কম্পোনেন্ট তৈরি          |
+| TypeScript      | টাইপ নিরাপত্তা ও কোড রক্ষণাবেক্ষণ             |
+| Tailwind CSS    | ওয়েবসাইটের ডিজাইন ও স্টাইলিং                  |
+| DaisyUI         | প্রস্তুত UI কম্পোনেন্ট                        |
+| Better Auth     | ব্যবহারকারীর নিবন্ধন, লগইন ও সেশন ব্যবস্থাপনা |
+| MongoDB         | ডেটাবেজ সংযোগ, কনফিগারেশন অনুযায়ী             |
+| React Hot Toast | নোটিফিকেশন দেখানো                             |
+| REST API        | পণ্য, বিভাগ ও বাজারদরের তথ্য সংগ্রহ           |
+| Vercel          | ওয়েবসাইট ডিপ্লয়মেন্ট ও হোস্টিং                |
 
 ---
 
-## 🚀 Getting Started
+## 🚀 নিজের কম্পিউটারে প্রজেক্ট চালানোর নিয়ম
 
-Follow these steps to run the project locally.
+### প্রয়োজনীয় সফটওয়্যার
 
-### Prerequisites
-
-Make sure you have the following installed:
-
-- Node.js (LTS version recommended)
+- Node.js (LTS সংস্করণ)
 - npm
 - Git
-- A MongoDB database for authentication, if required by your configuration
+- প্রয়োজন অনুযায়ী MongoDB ডেটাবেজ
 
-### 1. Clone the Repository
+### ধাপ ১: রিপোজিটরি ক্লোন করো
 
 ```bash
 git clone https://github.com/shahidul91325/Bazar-Dor-Web.git
 ```
 
-### 2. Navigate to the Project Directory
+### ধাপ ২: প্রজেক্ট ফোল্ডারে প্রবেশ করো
 
 ```bash
 cd Bazar-Dor-Web
 ```
 
-### 3. Install Dependencies
+### ধাপ ৩: প্রয়োজনীয় প্যাকেজ ইনস্টল করো
 
 ```bash
 npm install
 ```
 
-### 4. Configure Environment Variables
+### ধাপ ৪: Environment Variables সেট করো
 
-Create a `.env.local` file in the project root and configure the environment variables required by your application.
+প্রজেক্টের মূল ফোল্ডারে `.env.local` ফাইল তৈরি করো। তারপর তোমার কোডে ব্যবহৃত সঠিক Environment Variable-গুলো যোগ করো।
 
-Example:
+উদাহরণ:
 
 ```env
 BETTER_AUTH_SECRET=your_secret_key
@@ -112,25 +81,27 @@ BETTER_AUTH_URL=http://localhost:3000
 DATABASE_URL=your_mongodb_connection_string
 ```
 
-**Important:** These are example variable names. Check your Better Auth configuration and database connection code to confirm the exact names your project uses. Never commit real secrets or database credentials to GitHub.
+**গুরুত্বপূর্ণ:** এগুলো উদাহরণমাত্র। তোমার প্রজেক্টের কোড অনুযায়ী ভেরিয়েবলের নাম ও মান যাচাই করবে। আসল পাসওয়ার্ড, API secret বা ডেটাবেজের credentials কখনো GitHub-এ প্রকাশ করবে না।
 
-If Google and GitHub sign-in are enabled, configure their OAuth client IDs, client secrets, and callback URLs according to your authentication setup.
+Google বা GitHub লগইন চালু থাকলে সংশ্লিষ্ট OAuth credentials এবং callback URL-ও কনফিগার করতে হবে।
 
-### 5. Start the Development Server
+### ধাপ ৫: ডেভেলপমেন্ট সার্ভার চালু করো
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+এরপর ব্রাউজারে খোলো:
 
-### 6. Build for Production
+http://localhost:3000
+
+### ধাপ ৬: প্রোডাকশন বিল্ড তৈরি করো
 
 ```bash
 npm run build
 ```
 
-To run the production build locally:
+প্রোডাকশন বিল্ড চালাতে:
 
 ```bash
 npm run start
@@ -138,80 +109,77 @@ npm run start
 
 ---
 
-## 📂 Main Application Routes
+## 📂 ওয়েবসাইটের গুরুত্বপূর্ণ রুট
 
-| Route              | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `/`                | Homepage with price sections and product listings |
-| `/category/[slug]` | Products filtered by category                     |
-| `/product/[id]`    | Product details and market price information      |
-| `/sign-in`         | User sign-in                                      |
-| `/sign-up`         | User registration                                 |
-| `/profile`         | User profile and account information              |
-| `/not-found`       | Application not-found UI, where applicable        |
+| রুট                | কাজ                             |
+| ------------------ | ------------------------------- |
+| `/`                | হোমপেজ ও বাজারদরের তালিকা       |
+| `/category/[slug]` | বিভাগ অনুযায়ী পণ্যের তালিকা     |
+| `/product/[id]`    | পণ্যের বিস্তারিত তথ্য ও বাজারদর |
+| `/sign-in`         | ব্যবহারকারীর লগইন               |
+| `/sign-up`         | নতুন অ্যাকাউন্ট তৈরি            |
+| `/profile`         | ব্যবহারকারীর প্রোফাইল           |
 
-Some routes may require authentication. The actual access permissions depend on the application's authentication and route-protection configuration.
-
----
-
-## 📱 Responsive Design
-
-Bazar Dor is designed to work across different screen sizes.
-
-- **Mobile:** Compact navigation, stacked hero section, and single-column or narrow product grids.
-- **Tablet:** Flexible layouts and appropriately sized product cards.
-- **Desktop:** Wider content sections, multi-column product grids, and expanded navigation.
+কিছু পেজ দেখার জন্য লগইন প্রয়োজন হতে পারে। এটি প্রজেক্টের authentication ও route-protection কনফিগারেশনের ওপর নির্ভর করে।
 
 ---
 
-## 🔒 Authentication & Security
+## 📱 রেসপনসিভ ডিজাইন
 
-The application uses Better Auth for user authentication.
+বাজার দর বিভিন্ন স্ক্রিনের জন্য উপযোগী করে তৈরি করা হয়েছে।
 
-- Email and password authentication
-- Google and GitHub sign-in, when configured
-- Session-based access to protected pages
-- Profile information management
-- Authentication feedback and validation messages
-
-Keep all private credentials in environment variables. Do not expose database credentials, OAuth client secrets, or authentication secrets in client-side code.
+- **মোবাইল:** ছোট স্ক্রিনে ব্যবহার উপযোগী নেভিগেশন ও পণ্যের তালিকা।
+- **ট্যাবলেট:** স্ক্রিনের আকার অনুযায়ী সাজানো লেআউট ও পণ্য কার্ড।
+- **ডেস্কটপ:** বড় স্ক্রিনে প্রশস্ত লেআউট ও একাধিক কলামে পণ্য প্রদর্শন।
 
 ---
 
-## 🚢 Deployment
+## 🔐 ব্যবহারকারী অ্যাকাউন্ট ও নিরাপত্তা
 
-The application is deployed on Vercel.
+প্রজেক্টে Better Auth ব্যবহার করে ব্যবহারকারীর অ্যাকাউন্ট ও সেশন পরিচালনা করা হয়।
 
-**Live URL:** https://bazar-dor-web.vercel.app/
+- ইমেইল ও পাসওয়ার্ড দিয়ে নিবন্ধন এবং লগইন।
+- কনফিগার করা থাকলে Google ও GitHub লগইন।
+- প্রয়োজন অনুযায়ী সুরক্ষিত পেজে প্রবেশ।
+- প্রোফাইলের তথ্য ব্যবস্থাপনা।
+- লগইন ও ফর্মের জন্য প্রয়োজনীয় বার্তা এবং যাচাই।
 
-To deploy your own instance:
-
-1. Push your project to GitHub.
-2. Import the repository into Vercel.
-3. Configure the required environment variables.
-4. Verify your database and OAuth settings.
-5. Deploy the application.
-6. Test the homepage, authentication, category pages, product details, and direct URL refresh after deployment.
+নিরাপত্তার জন্য গোপন তথ্য Environment Variables-এ রাখতে হবে।
 
 ---
 
-## 📝 Important Note
+## 🚢 ওয়েবসাইট ডিপ্লয়মেন্ট
 
-Product prices are indicative and may change depending on market conditions, location, and time.
+প্রজেক্টটি Vercel-এ ডিপ্লয় করা হয়েছে।
 
-**সকল দাম সম্ভাব্য; বাজার অবস্থার ওপর নির্ভর করে পরিবর্তিত হয়।**
+**লাইভ ওয়েবসাইট:** https://bazar-dor-web.vercel.app/
+
+নিজের প্রজেক্ট ডিপ্লয় করতে:
+
+1. প্রজেক্টটি GitHub-এ পুশ করো।
+2. Vercel-এ রিপোজিটরিটি Import করো।
+3. প্রয়োজনীয় Environment Variables যোগ করো।
+4. ডেটাবেজ ও লগইন কনফিগারেশন যাচাই করো।
+5. প্রজেক্ট Deploy করো।
+6. হোমপেজ, লগইন, বিভাগ, পণ্যের বিস্তারিত পেজ এবং সরাসরি URL খুলে পরীক্ষা করো।
 
 ---
 
-## 👨‍💻 Author
+## 📝 গুরুত্বপূর্ণ তথ্য
 
-**Bazar Dor — বাজার দর**
+পণ্যের দাম সময়, স্থান ও বাজার পরিস্থিতি অনুযায়ী পরিবর্তিত হতে পারে। তাই প্রদর্শিত দামকে নির্দেশক তথ্য হিসেবে বিবেচনা করো।
 
-A web application built to make essential product prices in Bangladesh easier to explore and compare.
+**সঠিক বাজারদর জানার জন্য সংশ্লিষ্ট বাজারের সর্বশেষ তথ্য যাচাই করো।**
+
+---
+
+## 👨‍💻 প্রজেক্ট সম্পর্কে
+
+**বাজার দর (Bazar Dor)** — বাংলাদেশের নিত্যপ্রয়োজনীয় পণ্যের দাম সহজে দেখা ও তুলনা করার জন্য তৈরি একটি ওয়েব অ্যাপ্লিকেশন।
 
 - **GitHub:** https://github.com/shahidul91325/Bazar-Dor-Web
-- **Live Website:** https://bazar-dor-web.vercel.app/
+- **লাইভ ওয়েবসাইট:** https://bazar-dor-web.vercel.app/
 
 ---
 
-⭐ If you find this project useful, consider giving the repository a star on GitHub.
+⭐ **প্রজেক্টটি ভালো লাগলে GitHub রিপোজিটরিতে একটি Star দিতে পারো।**
